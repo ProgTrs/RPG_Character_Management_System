@@ -5,7 +5,22 @@ import rpg.manager.DataManager;
 import rpg.manager.Guild;
 import rpg.model.*;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
+
 public class Main {
+
+    private static ArrayList<PlayerCharacter> getOpponents(Guild guild){
+        ArrayList<PlayerCharacter> ops = new ArrayList<>();
+        int randomInt = ThreadLocalRandom.current().nextInt(guild.getGuildSize());
+        int prev_int = randomInt;
+        PlayerCharacter p1= guild.getPlayerByIndex(randomInt).orElseThrow();
+        while (prev_int== randomInt){randomInt = ThreadLocalRandom.current().nextInt(guild.getGuildSize());}
+        PlayerCharacter p2= guild.getPlayerByIndex(randomInt).orElseThrow();
+        ops.add(p1);
+        ops.add(p2);
+        return ops;
+    }
 
     private static final String SAVE_FILE = "server_state.dat";
 
@@ -22,8 +37,8 @@ public class Main {
             death_knight.equipWeapon(new Weapon("DeathBlade", 20));
             death_knight.equipArmor(new Armor("Smoldering ashes", 6));
 
-            ranger.equipArmor(new Armor("Banshee's veil", 5));
-            ranger.equipWeapon(new Weapon("Banshee's Cry Thruster", 19));
+            ranger.equipArmor(new Armor("Banshee's veil", 1));
+            ranger.equipWeapon(new Weapon("Banshee's Cry Thruster", 10));
 
             mage.equipArmor(new Armor("Gambler's smoking", 3));
             mage.equipWeapon(new Weapon("Arcane-sharpened Battle Deck", 27));
@@ -37,8 +52,12 @@ public class Main {
 
 
 
-        PlayerCharacter p2= guild.getPlayerByName("Twister").orElseThrow();
-        PlayerCharacter p1= guild.getPlayerByName("Sylvanas").orElseThrow();
+        //PlayerCharacter p2= guild.getPlayerByName("Twister").orElseThrow();
+        //PlayerCharacter p1= guild.getPlayerByName("Sylvanas").orElseThrow();
+
+        ArrayList<PlayerCharacter> ops = getOpponents(guild);
+        PlayerCharacter p1 =ops.get(0);
+        PlayerCharacter p2 =ops.get(1);
 
         while (p1.getHp()!= p1.getMaxHp()){
             p1.drinkPotion(new Potion("Minor Health Potion", 20));
@@ -52,5 +71,8 @@ public class Main {
         arena.duel(p1, p2);
 
         DataManager.saveGuildState(guild, SAVE_FILE);
+
+        //int randomInt = ThreadLocalRandom.current().nextInt(guild.getGuildSize());
+
     }
 }

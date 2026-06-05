@@ -23,4 +23,13 @@ public class Guild implements Serializable {
     }
 
     public int getGuildSize() { return members.size(); }
+
+
+    public Optional<PlayerCharacter> getPlayerByIndex(int index){
+        if (index >=0 && index< members.size()){
+            return Optional.of(members.get(index));
+        }
+        return Optional.empty();
+    }
+
 }
